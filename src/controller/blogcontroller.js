@@ -4,6 +4,7 @@ const { details, validId } = require("../validation/validators");
 
 
 
+
 const createBlog = async function (req, res) {
     try {
     let blog = req.body
@@ -130,16 +131,16 @@ const deleteBlog = async function (req, res) {
 
 //=======================================================================================//
 
- const deleteBlogByQuery = async function (req, res) {
+ const deleteBlogByQuery = async function (req,res) {
     try {
         let data = req.query
         if (!Object.keys(data).length) {
-            return res.status(400).send({ status: false, msg: "please select key for deleting the blog" })
+            return res.status(400).send({ status: false, msg: "plese select key for deletion" })
         }
         
         if (Object.keys(data).some(a=>a=="authorId")) {
             if (!data.authorId) {
-                return res.status(404).send({ status: false, msg: "Author id must be present" })
+                return res.status(400).send({ status: false, msg: "Author id must be present" })
                
             }
 
@@ -167,7 +168,6 @@ const deleteBlog = async function (req, res) {
             console.log(err)
           return   res.status(500).send({ status: false, msg: err.message })
         }}
-
 
 
 

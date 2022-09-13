@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const blogModel = require("../model/blogModel");
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const authorModel = require("../model/authorModel");
 
 //----------------------------------------------authentication------------------------------------------------------
 
@@ -13,6 +14,12 @@ const authentication = async function (req, res, next) {
     // console.log(decodedtoken);
     if (!decodedtoken) {return res.status(400).send({ status: false, msg: "Token is not valid" });}
 
+    // const authorid = req.params.authorId;
+    // if(!authorid){
+    //   return res.status(404).send({ msg: "not present Id" })
+    // }
+    // const decode = decodedtoken.userId;
+    // if (decode != authorid){return res.status(404).send({ msg: "incorrect Id" });}
     next();
   } catch (err) {
     // console.log(err);
@@ -24,6 +31,7 @@ const authentication = async function (req, res, next) {
 const authorisation = async function (req, res, next) {
   try {
     const Id = req.params.blogId;
+    
     const token = req.headers["x-api-key"];
 
     const decodedToken = jwt.verify(token, "Chetan-Shubhadip-Priyanka-Rajiv-group-52");
@@ -41,5 +49,25 @@ if(!blogId){
   } catch (err) {
     return res.status(500).send({ status: false, msg: err.message });}
 };
+
+
+
+
+const authorisation1 = async function (req, res, next) {
+  try {
+    const newId = req.query.authorId
+    const token = req.headers["x-api-key"];
+    const decodedToken = jwt.verify(token, "Chetan-Shubhadip-Priyanka-Rajiv-group-52");
+    const newData = await authorModel.findById(newId)
+    if(!newData) return res.status(400).send({msg : "id is not accepted"})
+    if(decodedToken.userId !=newId) return res.status(400).send({msg : "id is invalid"})
+    next();
+  }catch (err) {
+      return res.status(500).send({ status: false, msg: err.message });}
+  };
+
+
+
 module.exports.authentication = authentication;
 module.exports.authorisation = authorisation;
+module.exports.authorisation1= authorisation1;
